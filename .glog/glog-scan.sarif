@@ -1,0 +1,326 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Glog.AI",
+          "organization": "Glog.AI",
+          "fullName": "Glog, Making software more secure",
+          "version": "1.0.0",
+          "semanticVersion": "1.0.0",
+          "informationUri": "https://www.glog.ai",
+          "rules": [
+            {
+              "id": "glog-75152808-3286-4d6a-9d18-2c88823c49ca",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Shell Process Initiation: Potential Injection Vulnerability Detected\" is a security vulnerability that occurs when an application provides an attacker with the ability to control the argument to certain system calls or shell commands. In Python, this vulnerability can occur when using the `os.system()` function, which executes a command in a subshell. If an attacker can control the input to this function, they can potentially execute arbitrary commands on the system.\n\nIn the provided code example, the `os.system()` function is used to execute the `ar vx` command with a user-provided filename. If an attacker can control the `file` variable, they can potentially inject arbitrary commands.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using `os.system()` with user-provided input. Instead, use safer functions such as `subprocess.run()`, which does not use a shell and is not vulnerable to command injection.\n\n## Source Code Fix Recommendation\n\nReplace the `os.system()` call with a `subprocess.run()` call:\n\n```python\nimport subprocess\n\nsubprocess.run([\"ar\", \"vx\", file], check=True)\n```\n\n## Library Dependencies\n\nThe code example requires the `subprocess` module, which is included in the Python standard library.\n\n## References\n\n- [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B605"
+                ]
+              }
+            },
+            {
+              "id": "glog-2a2f3d2b-e772-42e8-b985-79e0982f586f",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe \"Potential Temp File/Directory Security Risk\" vulnerability in Python programming language refers to the insecure usage of temporary files or directories. In this case, the vulnerability arises from the use of a predictable temporary directory path (\"/tmp\"). An attacker could potentially exploit this by creating a symbolic link to a critical system file in \"/tmp\", which could lead to unauthorized access, data corruption, or even data loss.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to use unpredictable names for temporary files or directories. Python's built-in `tempfile` module can be used to create temporary files/directories in a secure manner. This module generates random, unpredictable names and can also handle the necessary permissions.\n\n## Source Code Fix Recommendation\n\nHere is a recommended fix for the provided code:\n\n```python\nimport tempfile\n\nwith tempfile.TemporaryDirectory() as tmpdir:\n    env.set(\"SCM_TMPDIR\", tmpdir)\n```\n\nIn this code, `tempfile.TemporaryDirectory()` is used to create a temporary directory with a unique and unpredictable name. This directory is automatically deleted when it is no longer in use.\n\n## Library Dependencies\n\nThe code example requires the following library dependencies:\n\n- A library or module that provides the `env.set` function. This is not a standard Python function and its source is not specified in the question.\n\n## OWASP and CWE Links\n\n- [OWASP - Insecure Temporary File](https://owasp.org/www-community/vulnerabilities/Insecure_Temporary_File)\n- [CWE-377: Insecure Temporary File](https://cwe.mitre.org/data/definitions/377.html)\n\nPlease note that these links are subject to change and may not always be accessible."
+              },
+              "properties": {
+                "tags": [
+                  "B108"
+                ]
+              }
+            },
+            {
+              "id": "glog-1010fced-d951-4d0f-ab54-d6d1c5489527",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Shell Process Initiation: Potential Injection Vulnerability Detected\" is a security vulnerability that occurs when an application provides an attacker with the ability to control the arguments of shell commands or system calls. In Python, this vulnerability can occur when using functions such as `os.system()`, `os.popen()`, `subprocess.Popen()`, etc. These functions execute shell commands, and if an attacker can control the input to these functions, they can execute arbitrary commands on the system.\n\nIn the provided code snippet, the vulnerability exists because `test_bench_bin`, `test_args`, and `lib_path` are concatenated and passed to `os.system()`. If an attacker can control the value of any of these variables, they can inject malicious commands.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using `os.system()` or similar functions that execute shell commands. Instead, use functions from the `subprocess` module that take a list of arguments. This way, the arguments are not processed by the shell, and command injection is not possible.\n\n## Source Code Fix Recommendation\n\nReplace the `os.system()` call with `subprocess.run()`. Here's how you can do it:\n\n```python\nimport subprocess\n\nsubprocess.run([test_bench_bin, test_args, lib_path])\n```\n\nIn this code, `test_bench_bin`, `test_args`, and `lib_path` are passed as separate arguments to `subprocess.run()`. This function does not use the shell to process the arguments, so command injection is not possible.\n\n## Library Dependencies\n\nThe code example requires the `subprocess` module, which is part of the Python Standard Library.\n\n## References\n\n- [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B605"
+                ]
+              }
+            },
+            {
+              "id": "glog-d8ddb944-6189-4427-b997-54ad3ad94f41",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `tarfile.extractall()` function in Python is used to extract all members of the archive to the current working directory or to the directory specified. However, if used without proper validation, it can lead to a vulnerability known as \"Path Traversal\". This vulnerability allows an attacker to read or write files anywhere on your system, including system files, which can lead to a full system compromise.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should validate the paths of the files to be extracted from the tar file. Ensure that the paths do not contain \"..\" or \"/\" at the beginning, which can lead to path traversal. Also, it's recommended to extract the files to a dedicated directory, not the current working directory or a directory that contains sensitive files.\n\n## Source Code Fix Recommendation\n\nHere is a simple way to validate the paths of the files in the tar file before extracting them:\n\n```python\nimport os\nimport tarfile\n\nwith tarfile.open('avizo.tar') as avizo_tar:\n    for member in avizo_tar.getmembers():\n        # Ensure that there's no path traversal\n        if os.path.isabs(member.name) or \"..\" in member.name:\n            print(f\"Skipping potentially dangerous file {member.name}\")\n            continue\n        avizo_tar.extract(member)\n```\n\n## Library Dependencies\n\nThe code example requires the built-in `os` and `tarfile` libraries in Python. No additional libraries are needed.\n\n## References\n\n- [OWASP Path Traversal](https://owasp.org/www-community/attacks/Path_Traversal)\n- [CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')](https://cwe.mitre.org/data/definitions/22.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B202"
+                ]
+              }
+            },
+            {
+              "id": "glog-eef78ba5-ffba-439e-8058-9bcadd5b9d4b",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Potential Unsafe Use of Temporary File/Directory\" vulnerability in Python refers to the insecure creation or use of temporary files or directories. This can lead to a variety of security issues, such as race conditions, privilege escalation, or information disclosure, if an attacker can predict the name of the temporary file or directory and manipulate it.\n\nIn the provided code snippet, a temporary directory (`/tmp/spack/bazel/spack-test`) is being created. If an attacker can predict this directory name, they could potentially create it first with malicious content, leading to a security breach.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should:\n\n- Use secure functions for creating temporary files or directories. Python's `tempfile` module provides such functions (`tempfile.mkdtemp` for directories and `tempfile.mkstemp` for files) which create them with unpredictable names and correct permissions, reducing the risk of an attacker predicting the name or manipulating the file/directory.\n\n- Ensure that the temporary files or directories are created with appropriate permissions, so that only the necessary users or processes can access them.\n\n- Delete temporary files or directories as soon as they are no longer needed.\n\n## Source Code Fix Recommendation\n\nHere's how you could modify the provided code snippet to use `tempfile.mkdtemp`:\n\n```python\nimport tempfile\nimport shutil\n\nwith tempfile.TemporaryDirectory() as temp_dir:\n    working_dir = os.path.join(temp_dir, \"spack\", \"bazel\", \"spack-test\")\n    os.makedirs(working_dir, exist_ok=True)\n    # ... rest of your code ...\n```\n\nIn this code, `tempfile.TemporaryDirectory()` creates a new temporary directory with a unique name, and `os.makedirs` is used to create the necessary subdirectories within it. The temporary directory and all its contents are automatically deleted when the `with` block is exited.\n\n## Library Dependencies\n\nThe code example requires the following Python standard library modules:\n\n- `tempfile`\n- `shutil`\n- `os`\n\n## References\n\n- [OWASP - Insecure Temporary File](https://owasp.org/www-community/vulnerabilities/Insecure_Temporary_File)\n- [CWE-377: Insecure Temporary File](https://cwe.mitre.org/data/definitions/377.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B108"
+                ]
+              }
+            },
+            {
+              "id": "glog-ba6a0262-4f14-4499-8ae1-9caf0731d6b7",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\n\"Potential Unsafe Use of Temporary File/Directory\" vulnerability in Python refers to the insecure usage of temporary files or directories. This vulnerability can lead to various security issues such as race conditions, information disclosure, or even code execution. In the provided code snippet, the file \"/tmp/cuda-installer.log\" is being removed. If an attacker can predict this filename, they can create a symbolic link with the same name pointing to a critical system file. When the Python script is executed, it will remove the critical system file instead of the intended temporary file, leading to a potential security breach.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to use secure methods for creating and handling temporary files or directories. Python's `tempfile` module provides functions for creating secure temporary files and directories, which are safe from this type of attack.\n\n## Source Code Fix Recommendation\n\nHere is a safer way to handle temporary files using the `tempfile` module:\n\n```python\nimport os\nimport tempfile\n\n# Create a temporary file\ntemp = tempfile.NamedTemporaryFile(delete=False)\n\ntry:\n    # Use the temporary file\n    pass\nfinally:\n    # Safely remove the temporary file\n    os.remove(temp.name)\n```\n\nIn this code, `tempfile.NamedTemporaryFile(delete=False)` is used to create a secure temporary file. The `delete=False` argument is used to prevent the file from being deleted when it is closed, allowing you to delete it manually when you're done with it.\n\n## Library Dependencies\n\nThe code example requires the following Python standard library dependencies:\n\n- `os`\n- `tempfile`\n\n## References\n\n- [OWASP - Insecure Temporary File](https://owasp.org/www-community/vulnerabilities/Insecure_Temporary_File)\n- [CWE-377: Insecure Temporary File](https://cwe.mitre.org/data/definitions/377.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B108"
+                ]
+              }
+            }
+          ],
+          "language": "en-US",
+          "contents": [
+            "localizedData",
+            "nonLocalizedData"
+          ],
+          "isComprehensive": false
+        }
+      },
+      "language": "en-US",
+      "results": [
+        {
+          "ruleId": "glog-75152808-3286-4d6a-9d18-2c88823c49ca",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "\"Shell Process Initiation: Potential Injection Vulnerability Detected\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "repos/spack_repo/builtin/packages/aqlprofile/package.py"
+                },
+                "region": {
+                  "startLine": 319,
+                  "startColumn": 17,
+                  "endLine": 319,
+                  "endColumn": 43,
+                  "snippet": {
+                    "text": "                os.system(f\"ar vx {file}\")\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 318,
+                  "endLine": 320,
+                  "snippet": {
+                    "text": "            if file.endswith(\".deb\"):\n                os.system(f\"ar vx {file}\")\n                os.system(\"tar xvf data.tar.gz\")\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "HIGH",
+            "issue_confidence": "HIGH"
+          }
+        },
+        {
+          "ruleId": "glog-2a2f3d2b-e772-42e8-b985-79e0982f586f",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential Temp File/Directory Security Risk"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "repos/spack_repo/builtin/packages/adf/package.py"
+                },
+                "region": {
+                  "startLine": 35,
+                  "startColumn": 31,
+                  "endLine": 35,
+                  "endColumn": 37,
+                  "snippet": {
+                    "text": "        env.set(\"SCM_TMPDIR\", \"/tmp\")\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 34,
+                  "endLine": 36,
+                  "snippet": {
+                    "text": "        env.set(\"SCMLICENSE\", join_path(self.prefix, \"license.txt\"))\n        env.set(\"SCM_TMPDIR\", \"/tmp\")\n\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "MEDIUM",
+            "issue_confidence": "MEDIUM"
+          }
+        },
+        {
+          "ruleId": "glog-1010fced-d951-4d0f-ab54-d6d1c5489527",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "\"Shell Process Initiation: Potential Injection Vulnerability Detected\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "repos/spack_repo/builtin/packages/aocl_sparse/package.py"
+                },
+                "region": {
+                  "startLine": 152,
+                  "startColumn": 9,
+                  "endLine": 152,
+                  "endColumn": 57,
+                  "snippet": {
+                    "text": "        os.system(test_bench_bin + test_args + lib_path)\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 151,
+                  "endLine": 152,
+                  "snippet": {
+                    "text": "        test_args += \"--sizem=1000 --sizen=1000 --sizennz=4000 --verify=1 \"\n        os.system(test_bench_bin + test_args + lib_path)\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "HIGH",
+            "issue_confidence": "HIGH"
+          }
+        },
+        {
+          "ruleId": "glog-d8ddb944-6189-4427-b997-54ad3ad94f41",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "Unvalidated tarfile.extractall Usage Vulnerability"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "repos/spack_repo/builtin/packages/avizo/package.py"
+                },
+                "region": {
+                  "startLine": 81,
+                  "startColumn": 13,
+                  "endLine": 81,
+                  "endColumn": 35,
+                  "snippet": {
+                    "text": "            avizo_tar.extractall()\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 80,
+                  "endLine": 82,
+                  "snippet": {
+                    "text": "            )\n            avizo_tar.extractall()\n\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "HIGH",
+            "issue_confidence": "HIGH"
+          }
+        },
+        {
+          "ruleId": "glog-eef78ba5-ffba-439e-8058-9bcadd5b9d4b",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential Unsafe Use of Temporary File/Directory"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "repos/spack_repo/builtin/packages/bazel/package.py"
+                },
+                "region": {
+                  "startLine": 320,
+                  "startColumn": 26,
+                  "endLine": 320,
+                  "endColumn": 55,
+                  "snippet": {
+                    "text": "        with working_dir(\"/tmp/spack/bazel/spack-test\", create=True):\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 319,
+                  "endLine": 321,
+                  "snippet": {
+                    "text": "        # Bazel does not work properly on NFS, switch to /tmp\n        with working_dir(\"/tmp/spack/bazel/spack-test\", create=True):\n            touch(\"WORKSPACE\")\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "MEDIUM",
+            "issue_confidence": "MEDIUM"
+          }
+        },
+        {
+          "ruleId": "glog-ba6a0262-4f14-4499-8ae1-9caf0731d6b7",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential Unsafe Use of Temporary File/Directory"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "repos/spack_repo/builtin/packages/cuda/package.py"
+                },
+                "region": {
+                  "startLine": 777,
+                  "startColumn": 27,
+                  "endLine": 777,
+                  "endColumn": 52,
+                  "snippet": {
+                    "text": "                os.remove(\"/tmp/cuda-installer.log\")\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 776,
+                  "endLine": 778,
+                  "snippet": {
+                    "text": "            try:\n                os.remove(\"/tmp/cuda-installer.log\")\n            except OSError:\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "MEDIUM",
+            "issue_confidence": "MEDIUM"
+          }
+        }
+      ],
+      "newlineSequences": [
+        "\r\n",
+        "\n"
+      ]
+    }
+  ]
+}
